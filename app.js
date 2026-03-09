@@ -1,207 +1,193 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
+const resumeBtn = document.getElementById("resumeLink");
 
-let width, height, groundY;
+let width, height;
+// Physics & Scrolling variables
+let scroll = 0;
+let targetScroll = 0;
+const maxScroll = 6000; // How long the road is
+let speed = 0;
 
-// The Resume Content
-const resumeNodes = [
-    { title: "ABOUT ME", lines: ["Game Developer specializing in Unity.", "BSc Computer Engineering – IGU", "Erasmus – NOVA University Lisbon"] },
-    { title: "EXPERIENCE", lines: ["Lead Game Developer – Cim Games", "Built Brunswick, a 3D open-world game.", "Wrote 20k+ lines of modular C# code.", "Boosted FPS by 70% on low-end devices."] },
-    { title: "SKILLS", lines: ["Unity (URP, 2D/3D)", "C# & Gameplay Architecture", "Mobile Optimization & NavMesh AI"] },
-    { title: "CONTRIBUTIONS", lines: ["Jury Member & Organizer – IGU Game Jam", "Co-organized event with 120+ participants.", "Mentored developers on Unity."] },
-    { title: "PROJECTS", lines: ["Shatter Strike: 3D mobile railroad runner.", "Valorium Vengeance: 2D Hack & Slash.", "Stack Smash Omicron: Arcade mobile game."] },
-    { title: "CONTACT", lines: ["Phone: +90 501 030 11 30", "Email: Enisozbek1@gmail.com", "GitHub: github.com/EnisOZBEK"] }
-];
-
+// High-DPI Canvas Setup for Full HD Crispness
 function resize() {
+    const dpr = window.devicePixelRatio || 1;
     width = window.innerWidth;
     height = window.innerHeight;
-    canvas.width = width;
-    canvas.height = height;
-    groundY = height * 0.75;
+    
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    
+    ctx.scale(dpr, dpr);
 }
-
 window.addEventListener("resize", resize);
 resize();
 
-// Game State
-let state = "start"; // start, play, popup, gameover
-let frame = 0;
-let gameSpeed = 6;
-let entities = [];
-let activeNode = null;
-let nodeIndex = 0;
+// Input Handling: Mouse Wheel & Touch Swipes
+window.addEventListener("wheel", (e) => {
+    targetScroll += e.deltaY;
+});
 
-// Physics Player Object
-const player = {
-    x: 100, y: 0, size: 30,
-    vy: 0, gravity: 0.6, jumpPower: -12,
-    grounded: false,
-    
-    reset() {
-        this.y = groundY - this.size;
-        this.vy = 0;
-    },
-    update() {
-        this.vy += this.gravity;
-        this.y += this.vy;
-        
-        if (this.y + this.size >= groundY) {
-            this.y = groundY - this.size;
-            this.vy = 0;
-            this.grounded = true;
-        } else {
-            this.grounded = false;
-        }
-    },
-    jump() {
-        if (this.grounded) {
-            this.vy = this.jumpPower;
-            this.grounded = false;
-        }
-    },
-    draw() {
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = "#00E5FF";
-        ctx.fillStyle = "#00E5FF";
-        ctx.fillRect(this.x, this.y, this.size, this.size);
-        ctx.shadowBlur = 0;
-    }
-};
+let touchStartY = 0;
+window.addEventListener("touchstart", (e) => {
+    touchStartY = e.touches[0].clientY;
+});
+window.addEventListener("touchmove", (e) => {
+    let dy = touchStartY - e.touches[0].clientY;
+    targetScroll += dy * 2; // Touch sensitivity
+    touchStartY = e.touches[0].clientY;
+});
 
-// Input Handling (One-Touch)
-function handleInput(e) {
-    if (e.type === "touchstart") e.preventDefault();
-    
-    if (state === "start") {
-        state = "play";
-        player.reset();
-        entities = [];
-        nodeIndex = 0;
-    } else if (state === "play") {
-        player.jump();
-    } else if (state === "popup") {
-        state = "play"; // Resume run
-    } else if (state === "gameover") {
-        state = "start";
-    }
-}
+// Resume Data mapped to positions on the road (X coordinates)
+const milestones = [
+    { x: 300, title: "ENIS ÖZBEK", subtitle: "Game Developer | Gameplay & Systems Designer [cite: 5]", lines: ["Scroll down or swipe up to drive."] },
+    { x: 1500, title: "EXPERIENCE [cite: 8]", subtitle: "Lead Game Developer @ Cim Games [cite: 9]", lines: ["• Led full-cycle development of Brunswick (3D open-world). [cite: 10]", "• Authored 20,000+ lines of optimized C# code. [cite: 11]", "• Boosted average FPS by 70% on low-end devices. [cite: 15]"] },
+    { x: 2800, title: "SKILLS [cite: 20]", subtitle: "Technical Arsenal", lines: ["• Unity (URP, 2D/3D) & C# [cite: 22]", "• Gameplay Architecture & System Design [cite: 22]", "• Mobile Optimization, NavMesh & AI [cite: 22]"] },
+    { x: 4100, title: "PROJECTS [cite: 28]", subtitle: "Solo & Academic Work", lines: ["• Shatter Strike: 3D mobile railroad runner with destruction. [cite: 29, 30]", "• Valorium Vengeance: 2D Hack & Slash adventure. [cite: 33, 34]", "• Stack Smash Omicron: Fast-paced arcade stacker. [cite: 37, 38]"] },
+    { x: 5400, title: "CONTACT", subtitle: "Let's build something great.", lines: ["Phone: +90 (501) 030 11 30 [cite: 1]", "Email: Enisozbek1@gmail.com [cite: 2]", "GitHub: github.com/EnisOZBEK [cite: 2]"] }
+];
 
-window.addEventListener("mousedown", handleInput);
-window.addEventListener("touchstart", handleInput, { passive: false });
-
-// Collision Detection (AABB)
-function checkCollision(r1, r2) {
-    return r1.x < r2.x + r2.w && r1.x + r1.size > r2.x &&
-           r1.y < r2.y + r2.h && r1.y + r1.size > r2.y;
-}
-
-// Spawning Logic
-function spawnEntities() {
-    if (frame % 120 === 0 && Math.random() > 0.5) {
-        // Spawn Obstacle (Red)
-        entities.push({ type: "obstacle", x: width, y: groundY - 30, w: 20, h: 30, color: "#FF3366" });
-    }
+// Drawing the Hatchback Car
+function drawCar(carX, carY, wheelRotation) {
+    ctx.save();
+    ctx.translate(carX, carY);
     
-    if (frame % 400 === 0 && nodeIndex < resumeNodes.length) {
-        // Spawn Data Node (White)
-        entities.push({ type: "node", x: width, y: groundY - 90, w: 30, h: 30, color: "#FFFFFF", data: resumeNodes[nodeIndex] });
-        nodeIndex++;
-    }
-}
-
-// Rendering the UI Popups
-function drawPopup() {
-    ctx.fillStyle = "rgba(5, 5, 5, 0.9)";
-    ctx.fillRect(0, 0, width, height);
-    
-    ctx.fillStyle = "#00E5FF";
-    ctx.font = "bold 32px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText(activeNode.title, width / 2, height / 2 - 80);
-    
-    ctx.fillStyle = "#FFFFFF";
-    ctx.font = "18px Arial";
-    activeNode.lines.forEach((line, i) => {
-        ctx.fillText(line, width / 2, height / 2 - 20 + (i * 30));
-    });
-    
-    ctx.fillStyle = "#888888";
-    ctx.font = "16px Arial";
-    ctx.fillText("Tap to continue running", width / 2, height / 2 + 120);
-}
-
-// Main Game Loop
-function loop() {
-    ctx.fillStyle = "#050505";
-    ctx.fillRect(0, 0, width, height);
-    
-    // Draw Ground Line
-    ctx.strokeStyle = "#222";
-    ctx.lineWidth = 2;
+    // Car Shadow
+    ctx.fillStyle = "rgba(0,0,0,0.5)";
     ctx.beginPath();
-    ctx.moveTo(0, groundY);
-    ctx.lineTo(width, groundY);
-    ctx.stroke();
+    ctx.ellipse(50, 25, 60, 10, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    if (state === "start") {
-        ctx.fillStyle = "#FFFFFF";
-        ctx.font = "24px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("ENIS ÖZBEK - INTERACTIVE RESUME", width / 2, height / 2);
-        ctx.fillStyle = "#FF3366";
-        ctx.fillText("Tap to Start", width / 2, height / 2 + 50);
-    } 
+    // Car Body (Sleek Red Hatchback)
+    ctx.fillStyle = "#D31A38"; // Sporty Red
+    ctx.beginPath();
+    ctx.moveTo(0, 15); // Front bumper
+    ctx.lineTo(20, 0); // Hood
+    ctx.lineTo(45, -15); // Windshield
+    ctx.lineTo(85, -15); // Roof
+    ctx.lineTo(100, 5); // Hatchback rear
+    ctx.lineTo(100, 20); // Rear bumper
+    ctx.lineTo(0, 20); // Bottom
+    ctx.closePath();
+    ctx.fill();
+
+    // Windows
+    ctx.fillStyle = "#111";
+    ctx.beginPath();
+    ctx.moveTo(48, -12);
+    ctx.lineTo(82, -12);
+    ctx.lineTo(92, 2);
+    ctx.lineTo(52, 2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Wheels
+    const drawWheel = (wx, wy) => {
+        ctx.save();
+        ctx.translate(wx, wy);
+        ctx.rotate(wheelRotation);
+        ctx.fillStyle = "#222"; // Tire
+        ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#ccc"; // Rim
+        ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
+        // Rim spokes
+        ctx.strokeStyle = "#888"; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(6, 0); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, -6); ctx.lineTo(0, 6); ctx.stroke();
+        ctx.restore();
+    };
     
-    else if (state === "play") {
-        player.update();
-        player.draw();
+    drawWheel(20, 20); // Front wheel
+    drawWheel(80, 20); // Rear wheel
+
+    ctx.restore();
+}
+
+function loop() {
+    // Smooth scrolling logic (Lerp)
+    targetScroll = Math.max(0, Math.min(targetScroll, maxScroll));
+    speed = (targetScroll - scroll) * 0.05;
+    scroll += speed;
+
+    // Show PDF button at the very end of the road
+    if (scroll > maxScroll - 500) {
+        resumeBtn.style.display = "block";
+    } else {
+        resumeBtn.style.display = "none";
+    }
+
+    // Clear Screen
+    ctx.fillStyle = "#0d0d12";
+    ctx.fillRect(0, 0, width, height);
+
+    const roadY = height * 0.7;
+
+    // 1. Draw Parallax Background (Mountains/Cityscape)
+    ctx.fillStyle = "#1a1a24";
+    for (let i = 0; i < 10; i++) {
+        let bgX = (i * 400) - (scroll * 0.2) % 400; // Moves slower than the road
+        ctx.beginPath();
+        ctx.moveTo(bgX, roadY);
+        ctx.lineTo(bgX + 200, roadY - 200);
+        ctx.lineTo(bgX + 400, roadY);
+        ctx.fill();
+    }
+
+    // 2. Draw Road
+    ctx.fillStyle = "#222";
+    ctx.fillRect(0, roadY, width, height - roadY);
+    
+    // Road Lines
+    ctx.fillStyle = "#FFD700";
+    for (let i = 0; i < width / 100 + 2; i++) {
+        let lineX = (i * 150) - (scroll % 150);
+        ctx.fillRect(lineX, roadY + 40, 80, 5);
+    }
+
+    // 3. Draw Milestones (Text nodes)
+    milestones.forEach(m => {
+        let screenX = m.x - scroll + width / 2; // Center based on scroll
         
-        spawnEntities();
-        
-        for (let i = entities.length - 1; i >= 0; i--) {
-            let ent = entities[i];
-            ent.x -= gameSpeed;
+        // Only draw if on screen to save performance
+        if (screenX > -500 && screenX < width + 500) {
+            ctx.textAlign = "center";
             
-            // Draw Entity
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = ent.color;
-            ctx.fillStyle = ent.color;
-            ctx.fillRect(ent.x, ent.y, ent.w, ent.h);
-            ctx.shadowBlur = 0;
+            // Title
+            ctx.fillStyle = "#00E5FF";
+            ctx.font = "bold 42px 'Segoe UI', Arial";
+            ctx.fillText(m.title, screenX, roadY - 250);
             
-            // Collision
-            if (checkCollision(player, ent)) {
-                if (ent.type === "obstacle") {
-                    state = "gameover";
-                } else if (ent.type === "node") {
-                    state = "popup";
-                    activeNode = ent.data;
-                    entities.splice(i, 1); // Remove collected node
-                }
-            }
-            
-            if (ent.x + ent.w < 0) entities.splice(i, 1);
+            // Subtitle
+            ctx.fillStyle = "#FF3366";
+            ctx.font = "bold 24px 'Segoe UI', Arial";
+            ctx.fillText(m.subtitle, screenX, roadY - 210);
+
+            // Lines
+            ctx.fillStyle = "#FFF";
+            ctx.font = "18px 'Segoe UI', Arial";
+            m.lines.forEach((line, index) => {
+                ctx.fillText(line, screenX, roadY - 160 + (index * 30));
+            });
+
+            // Anchor Line connecting text to the road
+            ctx.strokeStyle = "rgba(0, 229, 255, 0.3)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(screenX, roadY - 140 + (m.lines.length * 30));
+            ctx.lineTo(screenX, roadY);
+            ctx.stroke();
         }
-        frame++;
-    } 
-    
-    else if (state === "popup") {
-        drawPopup();
-    }
-    
-    else if (state === "gameover") {
-        ctx.fillStyle = "#FF3366";
-        ctx.font = "32px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("SYSTEM FAILURE", width / 2, height / 2);
-        ctx.fillStyle = "#FFFFFF";
-        ctx.font = "20px Arial";
-        ctx.fillText("Tap to Retry", width / 2, height / 2 + 50);
-    }
-    
+    });
+
+    // 4. Draw Car (Fixed X position, animated wheels)
+    const carX = width * 0.2; // Car stays at 20% of screen width
+    const wheelRotation = scroll * 0.05;
+    drawCar(carX, roadY - 25, wheelRotation);
+
     requestAnimationFrame(loop);
 }
 
-player.reset();
 loop();

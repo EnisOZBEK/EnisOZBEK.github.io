@@ -1,0 +1,22 @@
+body{
+margin:0;
+overflow:hidden;
+background:#050505;
+font-family:Arial;
+}
+
+canvas{
+display:block;
+}
+
+.resumeLink{
+position:fixed;
+bottom:10px;
+left:10px;
+color:white;
+text-decoration:none;
+background:#111;
+padding:8px 12px;
+border-radius:6px;
+font-size:14px;
+}

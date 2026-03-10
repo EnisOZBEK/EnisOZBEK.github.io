@@ -1,12 +1,11 @@
 <!doctype html>
 <html lang="en" class="h-full">
- <head>
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Enis Özbek | Interactive Portfolio</title>
-  <script src="/_sdk/element_sdk.js"></script>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&amp;family=Rajdhani:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -14,7 +13,6 @@
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
-    
     html, body {
       width: 100%;
       height: 100%;
@@ -23,14 +21,12 @@
       touch-action: none;
       overscroll-behavior: none;
     }
-    
     canvas {
       display: block;
       position: fixed;
       top: 0;
       left: 0;
     }
-    
     .loading-screen {
       position: fixed;
       top: 0;
@@ -45,12 +41,10 @@
       z-index: 1000;
       transition: opacity 0.8s ease, visibility 0.8s ease;
     }
-    
     .loading-screen.hidden {
       opacity: 0;
       visibility: hidden;
     }
-    
     .loader {
       width: 120px;
       height: 4px;
@@ -59,7 +53,6 @@
       overflow: hidden;
       margin-top: 30px;
     }
-    
     .loader-bar {
       width: 0%;
       height: 100%;
@@ -68,7 +61,6 @@
       transition: width 0.3s ease;
       box-shadow: 0 0 20px #00E5FF;
     }
-    
     .loading-text {
       font-family: 'Orbitron', sans-serif;
       color: #00E5FF;
@@ -77,7 +69,6 @@
       margin-top: 20px;
       text-transform: uppercase;
     }
-    
     .loading-logo {
       font-family: 'Orbitron', sans-serif;
       font-size: 32px;
@@ -88,7 +79,6 @@
       background-clip: text;
       letter-spacing: 8px;
     }
-    
     .scroll-hint {
       position: fixed;
       bottom: 30px;
@@ -103,16 +93,13 @@
       pointer-events: none;
       transition: opacity 0.5s ease;
     }
-    
     .scroll-hint.hidden {
       opacity: 0;
     }
-    
     @keyframes pulse {
       0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
       50% { opacity: 1; transform: translateX(-50%) translateY(-5px); }
     }
-    
     .progress-bar {
       position: fixed;
       top: 0;
@@ -123,7 +110,6 @@
       transition: width 0.1s ease;
       box-shadow: 0 0 10px #00E5FF, 0 0 20px rgba(0, 229, 255, 0.5);
     }
-    
     .milestone-indicator {
       position: fixed;
       top: 20px;
@@ -136,34 +122,20 @@
       text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
     }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body class="h-full">
+</head>
+<body class="h-full">
   <div class="loading-screen" id="loadingScreen">
-   <div class="loading-logo">
-    PORTFOLIO
-   </div>
+   <div class="loading-logo">PORTFOLIO</div>
    <div class="loader">
     <div class="loader-bar" id="loaderBar"></div>
    </div>
-   <div class="loading-text" id="loadingText">
-    INITIALIZING
-   </div>
+   <div class="loading-text" id="loadingText">INITIALIZING</div>
   </div>
   <canvas id="canvas"></canvas>
   <div class="progress-bar" id="progressBar"></div>
-  <div class="milestone-indicator" id="milestoneIndicator">
-   MILE 0
-  </div>
-  <div class="scroll-hint" id="scrollHint">
-   ↓ SCROLL OR SWIPE TO DRIVE ↓
-  </div>
+  <div class="milestone-indicator" id="milestoneIndicator">MILE 0</div>
+  <div class="scroll-hint" id="scrollHint">↓ SCROLL OR SWIPE TO DRIVE ↓</div>
   <script>
-    // ═══════════════════════════════════════════════════════════════════════════
-    // CONFIGURATION & CONSTANTS
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     const CONFIG = {
       colors: {
         void: '#0d0d12',
@@ -192,34 +164,19 @@
       }
     };
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // SDK INTEGRATION & CONFIG
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    const defaultConfig = {
+    const config = {
       owner_name: 'ENIS ÖZBEK',
       owner_title: 'Game Developer | Gameplay & Systems Designer',
       contact_phone: '+90 501 030 11 30',
-      contact_email: 'Enisozbek1@gmail.com',
-      primary_color: '#00E5FF',
-      secondary_color: '#D31A38',
-      background_color: '#0d0d12',
-      text_color: '#FFFFFF',
-      accent_color: '#8B5CF6'
+      contact_email: 'Enisozbek1@gmail.com'
     };
 
-    let config = { ...defaultConfig };
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // MILESTONE DATA
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     function getMilestones() {
       return [
         {
           x: 400,
-          title: config.owner_name || defaultConfig.owner_name,
-          subtitle: config.owner_title || defaultConfig.owner_title,
+          title: config.owner_name,
+          subtitle: config.owner_title,
           text: 'Scroll down or swipe to drive.',
           icon: '🎮'
         },
@@ -248,16 +205,12 @@
           x: 10000,
           title: 'CONTACT',
           subtitle: "Let's build something.",
-          text: `Phone: ${config.contact_phone || defaultConfig.contact_phone} | Email: ${config.contact_email || defaultConfig.contact_email} | GitHub: EnisOZBEK`,
+          text: `Phone: ${config.contact_phone} | Email: ${config.contact_email} | GitHub: EnisOZBEK`,
           icon: '📧'
         }
       ];
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // CANVAS SETUP WITH HIGH-DPI SUPPORT
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     let dpr = window.devicePixelRatio || 1;
@@ -276,30 +229,10 @@
       ctx.scale(dpr, dpr);
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // UTILITY FUNCTIONS
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    function lerp(start, end, factor) {
-      return start + (end - start) * factor;
-    }
+    function lerp(start, end, factor) { return start + (end - start) * factor; }
+    function clamp(value, min, max) { return Math.min(Math.max(value, min), max); }
+    function randomRange(min, max) { return Math.random() * (max - min) + min; }
 
-    function clamp(value, min, max) {
-      return Math.min(Math.max(value, min), max);
-    }
-
-    function easeOutCubic(t) {
-      return 1 - Math.pow(1 - t, 3);
-    }
-
-    function randomRange(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // STATE MANAGEMENT
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     const state = {
       scrollTarget: 0,
       scrollCurrent: 0,
@@ -313,32 +246,16 @@
       isDragging: false
     };
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // PARTICLE SYSTEM
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     class Particle {
       constructor(x, y, vx, vy, color, size, life) {
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
-        this.color = color;
-        this.size = size;
-        this.life = life;
-        this.maxLife = life;
-        this.alpha = 1;
+        this.x = x; this.y = y; this.vx = vx; this.vy = vy;
+        this.color = color; this.size = size; this.life = life;
+        this.maxLife = life; this.alpha = 1;
       }
-
       update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.vy += 0.1;
-        this.life--;
-        this.alpha = this.life / this.maxLife;
-        this.size *= 0.98;
+        this.x += this.vx; this.y += this.vy; this.vy += 0.1;
+        this.life--; this.alpha = this.life / this.maxLife; this.size *= 0.98;
       }
-
       draw(ctx) {
         if (this.alpha <= 0) return;
         ctx.save();
@@ -354,31 +271,22 @@
     }
 
     const particles = [];
-
     function emitExhaustParticles(x, y, speed) {
       const particleCount = Math.floor(Math.abs(speed) * 0.3) + 1;
       for (let i = 0; i < particleCount; i++) {
         const color = Math.random() > 0.5 ? CONFIG.colors.neonBlue : CONFIG.colors.white;
         particles.push(new Particle(
-          x + randomRange(-5, 5),
-          y + randomRange(-3, 3),
-          -Math.abs(speed) * 0.3 + randomRange(-2, -0.5),
-          randomRange(-1, 1),
-          color,
-          randomRange(2, 5),
-          randomRange(20, 40)
+          x + randomRange(-5, 5), y + randomRange(-3, 3),
+          -Math.abs(speed) * 0.3 + randomRange(-2, -0.5), randomRange(-1, 1),
+          color, randomRange(2, 5), randomRange(20, 40)
         ));
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // STAR FIELD (Background Layer 1)
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     const stars = [];
     function initStars() {
       for (let i = 0; i < 200; i++) {
-        const isSlowFader = Math.random() < 0.2; // 1/5 of stars
+        const isSlowFader = Math.random() < 0.2;
         stars.push({
           x: Math.random() * CONFIG.world.totalLength * 1.5,
           y: Math.random() * 0.5,
@@ -392,15 +300,12 @@
 
     function drawStars(cameraX) {
       const parallaxFactor = 0.05;
-      
       stars.forEach(star => {
         const screenX = star.x - cameraX * parallaxFactor;
         const wrappedX = ((screenX % (width * 2)) + width * 2) % (width * 2) - width * 0.5;
         const screenY = star.y * height;
-        
         const twinkle = Math.sin(state.time * star.twinkleSpeed + star.twinkleOffset) * 0.5 + 0.5;
         const alpha = 0.3 + twinkle * 0.7;
-        
         ctx.save();
         ctx.globalAlpha = alpha;
         ctx.fillStyle = CONFIG.colors.white;
@@ -413,10 +318,6 @@
       });
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // NEON CITY SILHOUETTES (Background Layer 2)
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     const buildings = [];
     function initBuildings() {
       let x = 0;
@@ -424,9 +325,7 @@
         const buildingWidth = randomRange(40, 120);
         const buildingHeight = randomRange(80, 250);
         buildings.push({
-          x: x,
-          width: buildingWidth,
-          height: buildingHeight,
+          x: x, width: buildingWidth, height: buildingHeight,
           windows: Math.floor(randomRange(5, 10)),
           windowRows: Math.floor(buildingHeight / 25),
           glowColor: Math.random() > 0.5 ? CONFIG.colors.neonBlue : CONFIG.colors.neonPurple,
@@ -439,24 +338,17 @@
     function drawCitySilhouettes(cameraX) {
       const parallaxFactor = 0.15;
       const baseY = height * CONFIG.world.groundY;
-      
       buildings.forEach((building, buildingIndex) => {
         const screenX = building.x - cameraX * parallaxFactor;
         if (screenX < -200 || screenX > width + 200) return;
-        
         const y = baseY;
-        
         ctx.save();
-        
-        // Building silhouette
         const gradient = ctx.createLinearGradient(screenX, y - building.height, screenX, y);
         gradient.addColorStop(0, 'rgba(20, 20, 35, 0.9)');
         gradient.addColorStop(1, 'rgba(13, 13, 18, 0.95)');
-        
         ctx.fillStyle = gradient;
         ctx.fillRect(screenX, y - building.height, building.width, building.height);
         
-        // Glowing edge
         ctx.strokeStyle = building.glowColor;
         ctx.globalAlpha = 0.3;
         ctx.lineWidth = 1;
@@ -464,16 +356,13 @@
         ctx.shadowBlur = 10;
         ctx.strokeRect(screenX, y - building.height, building.width, building.height);
         
-        // Windows with persistent state
         ctx.globalAlpha = 0.7;
         const windowWidth = (building.width - 20) / building.windows;
         for (let row = 0; row < building.windowRows; row++) {
           for (let col = 0; col < building.windows; col++) {
-            // Use building index and position for deterministic window state
             const windowSeed = buildingIndex * 1000 + row * 100 + col;
             const pseudoRandom = Math.sin(windowSeed * 12.9898) * 43758.5453;
             const windowOn = (pseudoRandom - Math.floor(pseudoRandom)) > 0.3;
-            
             if (windowOn) {
               const wx = screenX + 10 + col * windowWidth;
               const wy = y - building.height + 15 + row * 25;
@@ -487,7 +376,6 @@
           }
         }
         
-        // Antenna
         if (building.hasAntenna) {
           ctx.shadowBlur = 10;
           ctx.strokeStyle = CONFIG.colors.neonRed;
@@ -499,7 +387,6 @@
           ctx.lineTo(screenX + building.width / 2, y - building.height - 30);
           ctx.stroke();
           
-          // Blinking light
           const blink = Math.sin(state.time * 3) > 0;
           if (blink) {
             ctx.fillStyle = CONFIG.colors.neonRed;
@@ -511,34 +398,24 @@
             ctx.fill();
           }
         }
-        
         ctx.restore();
       });
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // MOUNTAIN RANGE (Background Layer 3)
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     const mountains = [];
     function initMountains() {
       let x = 0;
       while (x < CONFIG.world.totalLength * 1.3) {
-        // Create deterministic mountains based on position seed for consistency
         const seed = Math.floor(x / 150);
         const pseudoRandom1 = Math.sin(seed * 12.9898) * 43758.5453;
         const pseudoRandom2 = Math.sin(seed * 78.233) * 43758.5453;
         const pseudoRandom3 = Math.sin(seed * 45.164) * 43758.5453;
-        
         const frac1 = pseudoRandom1 - Math.floor(pseudoRandom1);
         const frac2 = pseudoRandom2 - Math.floor(pseudoRandom2);
         const frac3 = pseudoRandom3 - Math.floor(pseudoRandom3);
-        
         const width = 200 + (frac1 * 200);
         const height = 100 + (frac2 * 100);
         const peaks = 2 + Math.floor(frac3 * 2);
-        
-        // Pre-compute peak positions deterministically
         const peakPositions = [];
         const peakWidth = width / peaks;
         for (let i = 0; i < peaks; i++) {
@@ -547,14 +424,7 @@
           const peakHeight = 0.7 + ((peakRandom - Math.floor(peakRandom)) * 0.3);
           peakPositions.push(peakHeight);
         }
-        
-        mountains.push({
-          x: x,
-          width: width,
-          height: height,
-          peaks: peaks,
-          peakPositions: peakPositions
-        });
+        mountains.push({ x: x, width: width, height: height, peaks: peaks, peakPositions: peakPositions });
         x += 150 + (frac1 * 150);
       }
     }
@@ -562,33 +432,25 @@
     function drawMountains(cameraX) {
       const parallaxFactor = 0.12;
       const baseY = height * CONFIG.world.groundY;
-      
       ctx.save();
-      
       mountains.forEach(mountain => {
         const screenX = mountain.x - cameraX * parallaxFactor;
         if (screenX < -mountain.width || screenX > width + mountain.width) return;
-        
         const gradient = ctx.createLinearGradient(screenX, baseY - mountain.height, screenX, baseY);
         gradient.addColorStop(0, 'rgba(30, 30, 50, 0.8)');
         gradient.addColorStop(1, 'rgba(13, 13, 18, 0.9)');
-        
         ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.moveTo(screenX, baseY);
-        
         const peakWidth = mountain.width / mountain.peaks;
         for (let i = 0; i < mountain.peaks; i++) {
           const peakX = screenX + (i + 0.5) * peakWidth;
           const peakY = baseY - mountain.height * mountain.peakPositions[i];
           ctx.lineTo(peakX, peakY);
         }
-        
         ctx.lineTo(screenX + mountain.width, baseY);
         ctx.closePath();
         ctx.fill();
-        
-        // Mountain glow edge
         ctx.strokeStyle = CONFIG.colors.neonPurple;
         ctx.globalAlpha = 0.15;
         ctx.lineWidth = 2;
@@ -596,31 +458,21 @@
         ctx.shadowBlur = 15;
         ctx.stroke();
       });
-      
       ctx.restore();
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // PEDESTRIAN WALKWAY & ROAD GROUND
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     function drawPedestrianWalkway(cameraX) {
       const roadY = height * CONFIG.world.groundY;
       const walkwayHeight = 40;
       const walkwayTopY = roadY - walkwayHeight;
       const walkwayBottomY = roadY + CONFIG.world.roadHeight;
-      
       ctx.save();
-      
-      // Top walkway (above road)
       const walkwayGradient1 = ctx.createLinearGradient(0, walkwayTopY, 0, roadY);
       walkwayGradient1.addColorStop(0, '#2a2a3a');
       walkwayGradient1.addColorStop(1, '#1a1a2a');
-      
       ctx.fillStyle = walkwayGradient1;
       ctx.fillRect(0, walkwayTopY, width, walkwayHeight);
       
-      // Top walkway edge glow (bottom edge)
       ctx.strokeStyle = CONFIG.colors.neonPurple;
       ctx.lineWidth = 2;
       ctx.globalAlpha = 0.3;
@@ -631,199 +483,78 @@
       ctx.lineTo(width, roadY);
       ctx.stroke();
       
-      // Bottom walkway (below road)
       const walkwayGradient2 = ctx.createLinearGradient(0, walkwayBottomY, 0, walkwayBottomY + walkwayHeight);
       walkwayGradient2.addColorStop(0, '#2a2a3a');
       walkwayGradient2.addColorStop(1, '#1a1a2a');
-      
       ctx.fillStyle = walkwayGradient2;
       ctx.fillRect(0, walkwayBottomY, width, walkwayHeight);
       
-      // Bottom walkway edge glow (top edge)
-      ctx.strokeStyle = CONFIG.colors.neonPurple;
-      ctx.lineWidth = 2;
-      ctx.globalAlpha = 0.3;
-      ctx.shadowColor = CONFIG.colors.neonPurple;
-      ctx.shadowBlur = 10;
       ctx.beginPath();
       ctx.moveTo(0, walkwayBottomY);
       ctx.lineTo(width, walkwayBottomY);
       ctx.stroke();
       
-      // Sidewalk tiles pattern on both - EXACT same parallax as road (no parallax at all)
       ctx.globalAlpha = 0.15;
       ctx.strokeStyle = 'rgba(100, 100, 120, 0.5)';
       ctx.lineWidth = 1;
       const tileSize = 60;
       const tileOffset = cameraX % tileSize;
       
-      // Top tiles
       for (let x = -tileOffset; x < width; x += tileSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, walkwayTopY);
-        ctx.lineTo(x, roadY);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, walkwayTopY); ctx.lineTo(x, roadY); ctx.stroke();
       }
-      
-      // Bottom tiles
       for (let x = -tileOffset; x < width; x += tileSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, walkwayBottomY);
-        ctx.lineTo(x, walkwayBottomY + walkwayHeight);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, walkwayBottomY); ctx.lineTo(x, walkwayBottomY + walkwayHeight); ctx.stroke();
       }
-      
       ctx.restore();
     }
-    
-    function drawRoad(cameraX, isWireframe = false) {
+
+    function drawRoad(cameraX) {
       const roadY = height * CONFIG.world.groundY;
       const roadHeight = CONFIG.world.roadHeight;
-      
       ctx.save();
+      const roadGradient = ctx.createLinearGradient(0, roadY, 0, roadY + roadHeight);
+      roadGradient.addColorStop(0, '#1a1a24');
+      roadGradient.addColorStop(0.5, '#252535');
+      roadGradient.addColorStop(1, '#1a1a24');
+      ctx.fillStyle = roadGradient;
+      ctx.fillRect(0, roadY, width, roadHeight);
       
-      if (isWireframe) {
-        // Wireframe mode
-        ctx.strokeStyle = CONFIG.colors.neonBlue;
-        ctx.lineWidth = 2;
-        ctx.shadowColor = CONFIG.colors.neonBlue;
-        ctx.shadowBlur = 10;
-        ctx.globalAlpha = 0.8;
-        
-        // Road outline
-        ctx.strokeRect(0, roadY - 5, width, roadHeight + 10);
-        
-        // Grid lines
-        const gridSpacing = 50;
-        for (let x = -cameraX % gridSpacing; x < width; x += gridSpacing) {
-          ctx.beginPath();
-          ctx.moveTo(x, roadY);
-          ctx.lineTo(x, roadY + roadHeight);
-          ctx.stroke();
-        }
-        
-        for (let y = roadY; y < roadY + roadHeight; y += 20) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(width, y);
-          ctx.stroke();
-        }
-      } else {
-        // Normal road
-        const roadGradient = ctx.createLinearGradient(0, roadY, 0, roadY + roadHeight);
-        roadGradient.addColorStop(0, '#1a1a24');
-        roadGradient.addColorStop(0.5, '#252535');
-        roadGradient.addColorStop(1, '#1a1a24');
-        
-        ctx.fillStyle = roadGradient;
-        ctx.fillRect(0, roadY, width, roadHeight);
-        
-        // Road edge glow - top
-        ctx.strokeStyle = CONFIG.colors.neonBlue;
-        ctx.lineWidth = 3;
-        ctx.shadowColor = CONFIG.colors.neonBlue;
-        ctx.shadowBlur = 15;
-        ctx.globalAlpha = 0.5;
-        ctx.beginPath();
-        ctx.moveTo(0, roadY);
-        ctx.lineTo(width, roadY);
-        ctx.stroke();
-        
-        // Road edge glow - bottom
-        ctx.strokeStyle = CONFIG.colors.neonRed;
-        ctx.shadowColor = CONFIG.colors.neonRed;
-        ctx.beginPath();
-        ctx.moveTo(0, roadY + roadHeight);
-        ctx.lineTo(width, roadY + roadHeight);
-        ctx.stroke();
-        
-        // Center line (dashed) - FIXED parallax direction
-        ctx.globalAlpha = 0.8;
-        ctx.strokeStyle = CONFIG.colors.white;
-        ctx.shadowColor = CONFIG.colors.white;
-        ctx.shadowBlur = 5;
-        ctx.lineWidth = 4;
-        ctx.setLineDash([40, 30]);
-        ctx.lineDashOffset = cameraX * 0.5; // Fixed: now moves correctly with camera
-        ctx.beginPath();
-        ctx.moveTo(0, roadY + roadHeight / 2);
-        ctx.lineTo(width, roadY + roadHeight / 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      }
-      
-      ctx.restore();
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // SPORTY HATCHBACK CAR
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    function drawCar(x, y, wheelRotation, speed, isWireframe = false) {
-      ctx.save();
-      ctx.translate(x, y);
-      
-      const carWidth = CONFIG.car.width;
-      const carHeight = CONFIG.car.height;
-      
-      // Suspension bounce based on speed
-      const bounce = Math.sin(state.time * 15) * Math.min(Math.abs(speed) * 0.1, 2);
-      ctx.translate(0, bounce);
-      
-      if (isWireframe) {
-        drawWireframeCar(carWidth, carHeight, wheelRotation);
-      } else {
-        drawDetailedCar(carWidth, carHeight, wheelRotation, speed);
-      }
-      
-      ctx.restore();
-    }
-
-    function drawWireframeCar(carWidth, carHeight, wheelRotation) {
       ctx.strokeStyle = CONFIG.colors.neonBlue;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       ctx.shadowColor = CONFIG.colors.neonBlue;
       ctx.shadowBlur = 15;
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath(); ctx.moveTo(0, roadY); ctx.lineTo(width, roadY); ctx.stroke();
       
-      // Body wireframe
-      ctx.beginPath();
-      // Lower body
-      ctx.moveTo(-carWidth * 0.5, 0);
-      ctx.lineTo(-carWidth * 0.45, carHeight * 0.3);
-      ctx.lineTo(carWidth * 0.45, carHeight * 0.3);
-      ctx.lineTo(carWidth * 0.5, 0);
-      // Roof line
-      ctx.moveTo(-carWidth * 0.3, carHeight * 0.3);
-      ctx.lineTo(-carWidth * 0.2, -carHeight * 0.4);
-      ctx.lineTo(carWidth * 0.15, -carHeight * 0.4);
-      ctx.lineTo(carWidth * 0.35, carHeight * 0.3);
-      ctx.stroke();
+      ctx.strokeStyle = CONFIG.colors.neonRed;
+      ctx.shadowColor = CONFIG.colors.neonRed;
+      ctx.beginPath(); ctx.moveTo(0, roadY + roadHeight); ctx.lineTo(width, roadY + roadHeight); ctx.stroke();
       
-      // Wheels wireframe
-      [-carWidth * 0.32, carWidth * 0.32].forEach(wx => {
-        ctx.save();
-        ctx.translate(wx, carHeight * 0.35);
-        ctx.rotate(wheelRotation);
-        
-        ctx.beginPath();
-        ctx.arc(0, 0, CONFIG.car.wheelRadius, 0, Math.PI * 2);
-        ctx.stroke();
-        
-        // Spokes
-        for (let i = 0; i < 6; i++) {
-          ctx.beginPath();
-          ctx.moveTo(0, 0);
-          const angle = (i / 6) * Math.PI * 2;
-          ctx.lineTo(Math.cos(angle) * CONFIG.car.wheelRadius * 0.8, Math.sin(angle) * CONFIG.car.wheelRadius * 0.8);
-          ctx.stroke();
-        }
-        
-        ctx.restore();
-      });
+      ctx.globalAlpha = 0.8;
+      ctx.strokeStyle = CONFIG.colors.white;
+      ctx.shadowColor = CONFIG.colors.white;
+      ctx.shadowBlur = 5;
+      ctx.lineWidth = 4;
+      ctx.setLineDash([40, 30]);
+      ctx.lineDashOffset = cameraX * 0.5;
+      ctx.beginPath(); ctx.moveTo(0, roadY + roadHeight / 2); ctx.lineTo(width, roadY + roadHeight / 2); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
+    function drawCar(x, y, wheelRotation, speed) {
+      ctx.save();
+      ctx.translate(x, y);
+      const carWidth = CONFIG.car.width;
+      const carHeight = CONFIG.car.height;
+      const bounce = Math.sin(state.time * 15) * Math.min(Math.abs(speed) * 0.1, 2);
+      ctx.translate(0, bounce);
+      drawDetailedCar(carWidth, carHeight, wheelRotation, speed);
+      ctx.restore();
     }
 
     function drawDetailedCar(carWidth, carHeight, wheelRotation, speed) {
-      // Car shadow
       ctx.save();
       ctx.globalAlpha = 0.3;
       ctx.fillStyle = '#000';
@@ -832,52 +563,31 @@
       ctx.fill();
       ctx.restore();
       
-      // Main body
       ctx.save();
-      
-      // Body gradient (slate blue with metallic sheen)
       const bodyGradient = ctx.createLinearGradient(-carWidth * 0.5, -carHeight * 0.4, carWidth * 0.5, carHeight * 0.3);
-      bodyGradient.addColorStop(0, '#2a4a6a');
-      bodyGradient.addColorStop(0.3, '#3d6a8a');
-      bodyGradient.addColorStop(0.5, '#4a7a9a');
-      bodyGradient.addColorStop(0.7, '#3d6a8a');
+      bodyGradient.addColorStop(0, '#2a4a6a'); bodyGradient.addColorStop(0.3, '#3d6a8a');
+      bodyGradient.addColorStop(0.5, '#4a7a9a'); bodyGradient.addColorStop(0.7, '#3d6a8a');
       bodyGradient.addColorStop(1, '#2a4a6a');
       
-      // Main body with vertical front end
       ctx.fillStyle = bodyGradient;
       ctx.beginPath();
-      // Left side lower
       ctx.moveTo(-carWidth * 0.48, carHeight * 0.15);
-      // Left side upper
       ctx.lineTo(-carWidth * 0.48, -carHeight * 0.1);
-      // Roof front left
       ctx.lineTo(-carWidth * 0.35, -carHeight * 0.35);
-      // Roof top center
       ctx.lineTo(-carWidth * 0.05, -carHeight * 0.4);
-      // Roof top right
       ctx.lineTo(carWidth * 0.05, -carHeight * 0.4);
-      // Roof rear right
       ctx.lineTo(carWidth * 0.35, -carHeight * 0.35);
-      // Right side upper
       ctx.lineTo(carWidth * 0.48, -carHeight * 0.1);
-      // Right side lower
       ctx.lineTo(carWidth * 0.48, carHeight * 0.15);
-      // Right side body
       ctx.lineTo(carWidth * 0.45, carHeight * 0.25);
       ctx.lineTo(-carWidth * 0.45, carHeight * 0.25);
       ctx.closePath();
       ctx.fill();
       
-      // Vertical front end with rounded corners
       ctx.fillStyle = '#1a3a5a';
       ctx.beginPath();
-      // Draw rounded rectangle for front
-      const frontX = carWidth * 0.45;
-      const frontY = -carHeight * 0.1;
-      const frontWidth = carWidth * 0.08;
-      const frontHeight = carHeight * 0.35;
-      const cornerRadius = 6;
-      
+      const frontX = carWidth * 0.45, frontY = -carHeight * 0.1;
+      const frontWidth = carWidth * 0.08, frontHeight = carHeight * 0.35, cornerRadius = 6;
       ctx.moveTo(frontX - cornerRadius, frontY);
       ctx.lineTo(frontX - frontWidth + cornerRadius, frontY);
       ctx.quadraticCurveTo(frontX - frontWidth, frontY, frontX - frontWidth, frontY + cornerRadius);
@@ -887,670 +597,265 @@
       ctx.quadraticCurveTo(frontX, frontY + frontHeight, frontX, frontY + frontHeight - cornerRadius);
       ctx.lineTo(frontX, frontY + cornerRadius);
       ctx.quadraticCurveTo(frontX, frontY, frontX - cornerRadius, frontY);
-      ctx.closePath();
-      ctx.fill();
+      ctx.closePath(); ctx.fill();
       
-      // Red trim line (Alpine-style)
       ctx.strokeStyle = CONFIG.colors.neonRed;
       ctx.lineWidth = 3;
       ctx.shadowColor = CONFIG.colors.neonRed;
       ctx.shadowBlur = 10;
-      ctx.beginPath();
-      ctx.moveTo(-carWidth * 0.45, carHeight * 0.1);
-      ctx.lineTo(carWidth * 0.45, carHeight * 0.1);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-carWidth * 0.45, carHeight * 0.1); ctx.lineTo(carWidth * 0.45, carHeight * 0.1); ctx.stroke();
       
-      // Windows - larger
       ctx.fillStyle = 'rgba(20, 40, 60, 0.9)';
       ctx.strokeStyle = 'rgba(100, 150, 200, 0.5)';
-      ctx.lineWidth = 2;
-      ctx.shadowBlur = 0;
+      ctx.lineWidth = 2; ctx.shadowBlur = 0;
       
-      // Windshield - bigger
       ctx.beginPath();
-      ctx.moveTo(-carWidth * 0.35, -carHeight * 0.28);
-      ctx.lineTo(-carWidth * 0.08, -carHeight * 0.38);
-      ctx.lineTo(carWidth * 0.08, -carHeight * 0.38);
-      ctx.lineTo(carWidth * 0.35, -carHeight * 0.28);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
+      ctx.moveTo(-carWidth * 0.35, -carHeight * 0.28); ctx.lineTo(-carWidth * 0.08, -carHeight * 0.38);
+      ctx.lineTo(carWidth * 0.08, -carHeight * 0.38); ctx.lineTo(carWidth * 0.35, -carHeight * 0.28);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
       
-      // Side window - bigger
       ctx.beginPath();
-      ctx.moveTo(carWidth * 0.25, -carHeight * 0.25);
-      ctx.lineTo(carWidth * 0.05, -carHeight * 0.35);
+      ctx.moveTo(carWidth * 0.25, -carHeight * 0.25); ctx.lineTo(carWidth * 0.05, -carHeight * 0.35);
       ctx.lineTo(carWidth * 0.35, -carHeight * 0.18);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
+      ctx.closePath(); ctx.fill(); ctx.stroke();
       
-      // Driver silhouette in windshield
       ctx.save();
       ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-      // Head
-      ctx.beginPath();
-      ctx.arc(-carWidth * 0.05, -carHeight * 0.32, carWidth * 0.05, 0, Math.PI * 2);
-      ctx.fill();
-      // Shoulders
+      ctx.beginPath(); ctx.arc(-carWidth * 0.05, -carHeight * 0.32, carWidth * 0.05, 0, Math.PI * 2); ctx.fill();
       ctx.fillRect(-carWidth * 0.12, -carHeight * 0.25, carWidth * 0.14, carWidth * 0.05);
       ctx.restore();
       
-      // Headlights
       ctx.fillStyle = CONFIG.colors.neonBlue;
       ctx.shadowColor = CONFIG.colors.neonBlue;
       ctx.shadowBlur = 20;
       ctx.beginPath();
-      ctx.moveTo(carWidth * 0.47, -carHeight * 0.02);
-      ctx.lineTo(carWidth * 0.53, carHeight * 0.05);
-      ctx.lineTo(carWidth * 0.5, carHeight * 0.12);
-      ctx.lineTo(carWidth * 0.43, carHeight * 0.08);
-      ctx.closePath();
-      ctx.fill();
+      ctx.moveTo(carWidth * 0.47, -carHeight * 0.02); ctx.lineTo(carWidth * 0.53, carHeight * 0.05);
+      ctx.lineTo(carWidth * 0.5, carHeight * 0.12); ctx.lineTo(carWidth * 0.43, carHeight * 0.08);
+      ctx.closePath(); ctx.fill();
       
-      // Headlight beam (when moving)
       if (Math.abs(speed) > 0.5) {
         ctx.globalAlpha = 0.15 + Math.abs(speed) * 0.01;
         const beamGradient = ctx.createRadialGradient(carWidth * 0.5, carHeight * 0.05, 0, carWidth * 0.5, carHeight * 0.05, 150);
-        beamGradient.addColorStop(0, CONFIG.colors.neonBlue);
-        beamGradient.addColorStop(1, 'transparent');
+        beamGradient.addColorStop(0, CONFIG.colors.neonBlue); beamGradient.addColorStop(1, 'transparent');
         ctx.fillStyle = beamGradient;
         ctx.beginPath();
-        ctx.moveTo(carWidth * 0.48, -carHeight * 0.1);
-        ctx.lineTo(carWidth * 0.5 + 150, -carHeight * 0.3);
-        ctx.lineTo(carWidth * 0.5 + 150, carHeight * 0.4);
-        ctx.lineTo(carWidth * 0.48, carHeight * 0.15);
-        ctx.closePath();
-        ctx.fill();
-        ctx.globalAlpha = 1;
+        ctx.moveTo(carWidth * 0.48, -carHeight * 0.1); ctx.lineTo(carWidth * 0.5 + 150, -carHeight * 0.3);
+        ctx.lineTo(carWidth * 0.5 + 150, carHeight * 0.4); ctx.lineTo(carWidth * 0.48, carHeight * 0.15);
+        ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
       }
       
-      // Tail lights
       ctx.fillStyle = CONFIG.colors.neonRed;
       ctx.shadowColor = CONFIG.colors.neonRed;
       ctx.shadowBlur = 15;
       ctx.fillRect(-carWidth * 0.47, -carHeight * 0.02, 8, 20);
       
-      // Spoiler
-      ctx.fillStyle = '#1a3a5a';
-      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#1a3a5a'; ctx.shadowBlur = 0;
       ctx.fillRect(-carWidth * 0.38, -carHeight * 0.48, carWidth * 0.15, 4);
-      
       ctx.restore();
       
-      // Wheels - smaller
       drawWheel(-carWidth * 0.32, carHeight * 0.28, wheelRotation, true);
       drawWheel(carWidth * 0.32, carHeight * 0.28, wheelRotation, true);
     }
 
     function drawWheel(x, y, rotation, isSmall = false) {
-      ctx.save();
-      ctx.translate(x, y);
-      
+      ctx.save(); ctx.translate(x, y);
       const radius = isSmall ? CONFIG.car.wheelRadius * 0.75 : CONFIG.car.wheelRadius;
+      ctx.fillStyle = '#1a1a1a'; ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = '#333'; ctx.lineWidth = 3; ctx.stroke();
       
-      // Tire
-      ctx.fillStyle = '#1a1a1a';
-      ctx.beginPath();
-      ctx.arc(0, 0, radius, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Tire edge
-      ctx.strokeStyle = '#333';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      
-      // Rim
-      ctx.save();
-      ctx.rotate(rotation);
-      
-      // Alpine-style multi-spoke rim
+      ctx.save(); ctx.rotate(rotation);
       const rimGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, radius * 0.85);
-      rimGradient.addColorStop(0, '#4a4a5a');
-      rimGradient.addColorStop(0.5, '#6a6a7a');
-      rimGradient.addColorStop(1, '#3a3a4a');
+      rimGradient.addColorStop(0, '#4a4a5a'); rimGradient.addColorStop(0.5, '#6a6a7a'); rimGradient.addColorStop(1, '#3a3a4a');
+      ctx.fillStyle = rimGradient; ctx.beginPath(); ctx.arc(0, 0, radius * 0.85, 0, Math.PI * 2); ctx.fill();
       
-      ctx.fillStyle = rimGradient;
-      ctx.beginPath();
-      ctx.arc(0, 0, radius * 0.85, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Spokes (5-spoke Alpine design)
       ctx.fillStyle = '#2a2a3a';
       for (let i = 0; i < 5; i++) {
-        ctx.save();
-        ctx.rotate((i / 5) * Math.PI * 2);
-        ctx.beginPath();
-        ctx.moveTo(-3, -radius * 0.2);
-        ctx.lineTo(3, -radius * 0.2);
-        ctx.lineTo(5, -radius * 0.75);
-        ctx.lineTo(-5, -radius * 0.75);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
+        ctx.save(); ctx.rotate((i / 5) * Math.PI * 2);
+        ctx.beginPath(); ctx.moveTo(-3, -radius * 0.2); ctx.lineTo(3, -radius * 0.2);
+        ctx.lineTo(5, -radius * 0.75); ctx.lineTo(-5, -radius * 0.75); ctx.closePath(); ctx.fill(); ctx.restore();
       }
-      
-      // Center cap
-      ctx.fillStyle = '#5a5a6a';
-      ctx.beginPath();
-      ctx.arc(0, 0, radius * 0.2, 0, Math.PI * 2);
-      ctx.fill();
-      
-      // Center logo (A for Alpine-inspired)
-      ctx.fillStyle = CONFIG.colors.neonBlue;
-      ctx.font = `bold ${radius * 0.2}px 'Orbitron', sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('A', 0, 0);
-      
-      ctx.restore();
-      ctx.restore();
+      ctx.fillStyle = '#5a5a6a'; ctx.beginPath(); ctx.arc(0, 0, radius * 0.2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = CONFIG.colors.neonBlue; ctx.font = `bold ${radius * 0.2}px 'Orbitron', sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('A', 0, 0);
+      ctx.restore(); ctx.restore();
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // AI DRONE COMPANION
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    const drone = {
-      offsetX: -100,
-      offsetY: -120,
-      bobPhase: 0,
-      scanningTarget: null,
-      scanProgress: 0
-    };
-
+    const drone = { offsetX: -100, offsetY: -120, bobPhase: 0, scanningTarget: null, scanProgress: 0 };
     function drawDrone(carX, carY, nearestMilestone, milestoneScreenX) {
       const droneX = carX + drone.offsetX + Math.sin(state.time * 2) * 10;
       const droneY = carY + drone.offsetY + Math.sin(state.time * 3 + 1) * 8;
+      ctx.save(); ctx.translate(droneX, droneY);
       
-      ctx.save();
-      ctx.translate(droneX, droneY);
-      
-      // Drone body
-      ctx.fillStyle = '#2a2a3a';
-      ctx.strokeStyle = CONFIG.colors.neonBlue;
-      ctx.lineWidth = 2;
-      ctx.shadowColor = CONFIG.colors.neonBlue;
-      ctx.shadowBlur = 10;
-      
-      // Main body (hexagonal)
+      ctx.fillStyle = '#2a2a3a'; ctx.strokeStyle = CONFIG.colors.neonBlue;
+      ctx.lineWidth = 2; ctx.shadowColor = CONFIG.colors.neonBlue; ctx.shadowBlur = 10;
       ctx.beginPath();
       for (let i = 0; i < 6; i++) {
         const angle = (i / 6) * Math.PI * 2 - Math.PI / 2;
-        const px = Math.cos(angle) * 15;
-        const py = Math.sin(angle) * 12;
-        if (i === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
+        const px = Math.cos(angle) * 15, py = Math.sin(angle) * 12;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
       }
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
+      ctx.closePath(); ctx.fill(); ctx.stroke();
       
-      // Eye/sensor
       const eyeGlow = Math.sin(state.time * 5) * 0.3 + 0.7;
-      ctx.fillStyle = CONFIG.colors.neonBlue;
-      ctx.globalAlpha = eyeGlow;
-      ctx.beginPath();
-      ctx.arc(0, 0, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalAlpha = 1;
+      ctx.fillStyle = CONFIG.colors.neonBlue; ctx.globalAlpha = eyeGlow;
+      ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
       
-      // Propellers
-      ctx.strokeStyle = 'rgba(0, 229, 255, 0.5)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(0, 229, 255, 0.5)'; ctx.lineWidth = 1;
       [-20, 20].forEach(propX => {
-        ctx.save();
-        ctx.translate(propX, -5);
-        ctx.rotate(state.time * 20);
-        ctx.beginPath();
-        ctx.moveTo(-12, 0);
-        ctx.lineTo(12, 0);
-        ctx.stroke();
-        ctx.restore();
+        ctx.save(); ctx.translate(propX, -5); ctx.rotate(state.time * 20);
+        ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(12, 0); ctx.stroke(); ctx.restore();
       });
-      
       ctx.restore();
       
-      // Scanning beam when near milestone
       if (nearestMilestone && Math.abs(milestoneScreenX - (carX + drone.offsetX)) < 300) {
         const beamAlpha = Math.sin(state.time * 8) * 0.3 + 0.5;
-        ctx.save();
-        ctx.globalAlpha = beamAlpha;
-        ctx.strokeStyle = CONFIG.colors.neonBlue;
-        ctx.lineWidth = 3;
-        ctx.shadowColor = CONFIG.colors.neonBlue;
-        ctx.shadowBlur = 20;
-        ctx.setLineDash([5, 5]);
-        ctx.lineDashOffset = -state.time * 50;
-        ctx.beginPath();
-        ctx.moveTo(droneX, droneY);
-        ctx.lineTo(milestoneScreenX, carY - 150);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.restore();
+        ctx.save(); ctx.globalAlpha = beamAlpha; ctx.strokeStyle = CONFIG.colors.neonBlue;
+        ctx.lineWidth = 3; ctx.shadowColor = CONFIG.colors.neonBlue; ctx.shadowBlur = 20;
+        ctx.setLineDash([5, 5]); ctx.lineDashOffset = -state.time * 50;
+        ctx.beginPath(); ctx.moveTo(droneX, droneY); ctx.lineTo(milestoneScreenX, carY - 150); ctx.stroke();
+        ctx.setLineDash([]); ctx.restore();
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // MILESTONE BILLBOARDS
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    function drawMilestone(milestone, screenX, cameraX, isWireframe = false) {
+    function drawMilestone(milestone, screenX, cameraX) {
       const roadY = height * CONFIG.world.groundY;
-      const walkwayHeight = 40;
-      const topWalkwayY = roadY - walkwayHeight;
-      const billboardWidth = 350;
-      const billboardHeight = 200;
-      
-      // Calculate visibility based on distance
-      const distanceFromCenter = Math.abs(screenX - width * 0.5);
-      const maxDistance = width * 0.8;
-      const visibility = Math.max(0, 1 - distanceFromCenter / maxDistance);
-      
+      const topWalkwayY = roadY - 40;
+      const billboardWidth = 350, billboardHeight = 200;
+      const visibility = Math.max(0, 1 - Math.abs(screenX - width * 0.5) / (width * 0.8));
       if (visibility <= 0) return;
       
-      ctx.save();
-      ctx.globalAlpha = visibility;
-      ctx.translate(screenX, topWalkwayY);
+      ctx.save(); ctx.globalAlpha = visibility; ctx.translate(screenX, topWalkwayY);
       
-      if (isWireframe) {
-        // Wireframe billboard
-        ctx.strokeStyle = CONFIG.colors.neonBlue;
-        ctx.lineWidth = 2;
-        ctx.shadowColor = CONFIG.colors.neonBlue;
-        ctx.shadowBlur = 15;
-        
-        // Frame
-        ctx.strokeRect(-billboardWidth / 2, -billboardHeight - 100, billboardWidth, billboardHeight);
-        
-        // Support pole from top walkway down
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(0, 100);
-        ctx.stroke();
-        
-        // Grid inside
-        for (let y = -billboardHeight - 80; y < -120; y += 20) {
-          ctx.globalAlpha = visibility * 0.3;
-          ctx.beginPath();
-          ctx.moveTo(-billboardWidth / 2 + 10, y);
-          ctx.lineTo(billboardWidth / 2 - 10, y);
-          ctx.stroke();
-        }
-        ctx.globalAlpha = visibility;
-        
-        // Text in wireframe
-        ctx.fillStyle = CONFIG.colors.neonBlue;
-        ctx.font = "bold 24px 'Orbitron', sans-serif";
-        ctx.textAlign = 'center';
-        ctx.fillText(milestone.title, 0, -billboardHeight - 60);
-        
-      } else {
-        // Holographic billboard effect
-        
-        // Support structure
-        ctx.fillStyle = '#1a1a2a';
-        ctx.strokeStyle = CONFIG.colors.neonBlue;
-        ctx.lineWidth = 2;
-        ctx.shadowColor = CONFIG.colors.neonBlue;
-        ctx.shadowBlur = 10;
-        
-        // Pole from bottom of billboard down to walkway (correct height)
-        const poleStartY = -100;  // Bottom of billboard
-        const poleEndY = 20;  // Even shorter to not touch road
-        const poleLength = poleEndY - poleStartY;
-        ctx.fillRect(-5, poleStartY, 10, poleLength);
-        ctx.strokeRect(-5, poleStartY, 10, poleLength);
-        
-        // Billboard frame
-        const frameGradient = ctx.createLinearGradient(-billboardWidth / 2, -billboardHeight - 100, billboardWidth / 2, -100);
-        frameGradient.addColorStop(0, 'rgba(13, 13, 18, 0.95)');
-        frameGradient.addColorStop(0.5, 'rgba(26, 26, 38, 0.95)');
-        frameGradient.addColorStop(1, 'rgba(13, 13, 18, 0.95)');
-        
-        ctx.fillStyle = frameGradient;
-        ctx.beginPath();
-        ctx.roundRect(-billboardWidth / 2, -billboardHeight - 100, billboardWidth, billboardHeight, 10);
-        ctx.fill();
-        
-        // Glowing border
-        ctx.strokeStyle = CONFIG.colors.neonBlue;
-        ctx.lineWidth = 3;
-        ctx.shadowColor = CONFIG.colors.neonBlue;
-        ctx.shadowBlur = 20;
-        ctx.stroke();
-        
-        // Inner glow
-        ctx.strokeStyle = CONFIG.colors.neonRed;
-        ctx.lineWidth = 1;
-        ctx.shadowColor = CONFIG.colors.neonRed;
-        ctx.beginPath();
-        ctx.roundRect(-billboardWidth / 2 + 8, -billboardHeight - 92, billboardWidth - 16, billboardHeight - 16, 5);
-        ctx.stroke();
-        
-        // Content
-        ctx.shadowBlur = 0;
-        
-        // Icon
-        ctx.font = '32px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(milestone.icon, 0, -billboardHeight - 55);
-        
-        // Title
-        ctx.fillStyle = CONFIG.colors.neonBlue;
-        ctx.shadowColor = CONFIG.colors.neonBlue;
-        ctx.shadowBlur = 10;
-        ctx.font = "bold 26px 'Orbitron', sans-serif";
-        ctx.fillText(milestone.title, 0, -billboardHeight - 20);
-        
-        // Subtitle
-        ctx.fillStyle = CONFIG.colors.neonRed;
-        ctx.shadowColor = CONFIG.colors.neonRed;
-        ctx.font = "600 14px 'Rajdhani', sans-serif";
-        ctx.fillText(milestone.subtitle, 0, -billboardHeight + 10);
-        
-        // Description text (word wrap)
-        ctx.fillStyle = CONFIG.colors.white;
-        ctx.shadowColor = 'transparent';
-        ctx.font = "400 13px 'Rajdhani', sans-serif";
-        
-        const words = milestone.text.split(' ');
-        let line = '';
-        let y = -billboardHeight + 40;
-        const maxWidth = billboardWidth - 40;
-        
-        words.forEach(word => {
-          const testLine = line + word + ' ';
-          const metrics = ctx.measureText(testLine);
-          if (metrics.width > maxWidth && line !== '') {
-            ctx.fillText(line.trim(), 0, y);
-            line = word + ' ';
-            y += 18;
-          } else {
-            line = testLine;
-          }
-        });
-        ctx.fillText(line.trim(), 0, y);
-        
-        // Holographic scan line effect
-        const scanY = ((state.time * 50) % billboardHeight) - billboardHeight - 100;
-        ctx.globalAlpha = visibility * 0.3;
-        ctx.fillStyle = CONFIG.colors.neonBlue;
-        ctx.fillRect(-billboardWidth / 2 + 5, scanY, billboardWidth - 10, 2);
-      }
+      ctx.fillStyle = '#1a1a2a'; ctx.strokeStyle = CONFIG.colors.neonBlue;
+      ctx.lineWidth = 2; ctx.shadowColor = CONFIG.colors.neonBlue; ctx.shadowBlur = 10;
+      ctx.fillRect(-5, -100, 10, 120); ctx.strokeRect(-5, -100, 10, 120);
       
+      const frameGradient = ctx.createLinearGradient(-billboardWidth / 2, -billboardHeight - 100, billboardWidth / 2, -100);
+      frameGradient.addColorStop(0, 'rgba(13, 13, 18, 0.95)');
+      frameGradient.addColorStop(0.5, 'rgba(26, 26, 38, 0.95)');
+      frameGradient.addColorStop(1, 'rgba(13, 13, 18, 0.95)');
+      ctx.fillStyle = frameGradient; ctx.beginPath();
+      ctx.roundRect(-billboardWidth / 2, -billboardHeight - 100, billboardWidth, billboardHeight, 10); ctx.fill();
+      
+      ctx.strokeStyle = CONFIG.colors.neonBlue; ctx.lineWidth = 3;
+      ctx.shadowColor = CONFIG.colors.neonBlue; ctx.shadowBlur = 20; ctx.stroke();
+      ctx.strokeStyle = CONFIG.colors.neonRed; ctx.lineWidth = 1;
+      ctx.shadowColor = CONFIG.colors.neonRed; ctx.beginPath();
+      ctx.roundRect(-billboardWidth / 2 + 8, -billboardHeight - 92, billboardWidth - 16, billboardHeight - 16, 5); ctx.stroke();
+      
+      ctx.shadowBlur = 0; ctx.font = '32px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText(milestone.icon, 0, -billboardHeight - 55);
+      
+      ctx.fillStyle = CONFIG.colors.neonBlue; ctx.shadowColor = CONFIG.colors.neonBlue; ctx.shadowBlur = 10;
+      ctx.font = "bold 26px 'Orbitron', sans-serif"; ctx.fillText(milestone.title, 0, -billboardHeight - 20);
+      
+      ctx.fillStyle = CONFIG.colors.neonRed; ctx.shadowColor = CONFIG.colors.neonRed;
+      ctx.font = "600 14px 'Rajdhani', sans-serif"; ctx.fillText(milestone.subtitle, 0, -billboardHeight + 10);
+      
+      ctx.fillStyle = CONFIG.colors.white; ctx.shadowColor = 'transparent';
+      ctx.font = "400 13px 'Rajdhani', sans-serif";
+      
+      const words = milestone.text.split(' ');
+      let line = '', y = -billboardHeight + 40;
+      words.forEach(word => {
+        const testLine = line + word + ' ';
+        if (ctx.measureText(testLine).width > billboardWidth - 40 && line !== '') {
+          ctx.fillText(line.trim(), 0, y); line = word + ' '; y += 18;
+        } else { line = testLine; }
+      });
+      ctx.fillText(line.trim(), 0, y);
+      
+      const scanY = ((state.time * 50) % billboardHeight) - billboardHeight - 100;
+      ctx.globalAlpha = visibility * 0.3; ctx.fillStyle = CONFIG.colors.neonBlue;
+      ctx.fillRect(-billboardWidth / 2 + 5, scanY, billboardWidth - 10, 2);
       ctx.restore();
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // WIREFRAME TRANSITION ZONE
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    const wireframeZone = {
-      zoneStart: 5200 + 600,  // milestone 2 + 600
-      zoneEnd: 7600 - 600,    // milestone 3 - 600
-      computed: false
-    };
-
-    function getWireframeIntensity(cameraX) {
-      if (cameraX < wireframeZone.zoneStart || cameraX > wireframeZone.zoneEnd) return 0;
-      
-      const zoneMid = (wireframeZone.zoneStart + wireframeZone.zoneEnd) / 2;
-      const zoneWidth = wireframeZone.zoneEnd - wireframeZone.zoneStart;
-      const distFromMid = Math.abs(cameraX - zoneMid);
-      
-      return Math.max(0, 1 - (distFromMid / (zoneWidth * 0.4)));
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // MAIN RENDER LOOP
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     function render() {
       state.time += 0.016;
-      
-      // Smooth scrolling with lerp
       state.scrollCurrent = lerp(state.scrollCurrent, state.scrollTarget, CONFIG.physics.lerpSpeed);
       state.scrollVelocity = state.scrollTarget - state.scrollCurrent;
-      
-      // Clamp scroll position
       state.scrollCurrent = clamp(state.scrollCurrent, 0, CONFIG.world.totalLength - width);
       state.scrollTarget = clamp(state.scrollTarget, 0, CONFIG.world.totalLength - width);
       
-      const cameraX = state.scrollCurrent;
-      const speed = state.scrollVelocity;
-      
-      // Update wheel rotation
+      const cameraX = state.scrollCurrent, speed = state.scrollVelocity;
       state.wheelRotation += speed * 0.05;
       
-      // Clear canvas
-      ctx.fillStyle = CONFIG.colors.void;
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = CONFIG.colors.void; ctx.fillRect(0, 0, width, height);
       
-      // Draw layers (back to front)
       drawStars(cameraX);
+      ctx.save(); drawMountains(cameraX); drawCitySilhouettes(cameraX); ctx.restore();
       
-      // Background layers always render normally (no wireframe)
-      ctx.save();
-      drawMountains(cameraX);
-      drawCitySilhouettes(cameraX);
-      ctx.restore();
+      drawRoad(cameraX); drawPedestrianWalkway(cameraX);
       
-      // Draw road (always normal, never wireframe)
-      drawRoad(cameraX, false);
-      
-      // Draw pedestrian walkway (always normal, never wireframe)
-      drawPedestrianWalkway(cameraX);
-      
-      // Draw milestones (always normal, never wireframe)
       const milestones = getMilestones();
-      let nearestMilestone = null;
-      let nearestMilestoneScreenX = 0;
-      let minDistance = Infinity;
+      let nearestMilestone = null, nearestMilestoneScreenX = 0, minDistance = Infinity;
       
       milestones.forEach((milestone, index) => {
         const screenX = milestone.x - cameraX;
-        drawMilestone(milestone, screenX, cameraX, false);
-        
+        drawMilestone(milestone, screenX, cameraX);
         const dist = Math.abs(screenX - width * 0.35);
         if (dist < minDistance) {
-          minDistance = dist;
-          nearestMilestone = milestone;
-          nearestMilestoneScreenX = screenX;
-          state.currentMilestone = index;
+          minDistance = dist; nearestMilestone = milestone;
+          nearestMilestoneScreenX = screenX; state.currentMilestone = index;
         }
       });
       
-      // Update particles
-      particles.forEach((p, i) => {
-        p.update();
-        if (p.life <= 0) particles.splice(i, 1);
-      });
+      particles.forEach((p, i) => { p.update(); if (p.life <= 0) particles.splice(i, 1); });
       
-      // Car position (fixed on screen, world scrolls behind)
-      const carScreenX = width * 0.35;
-      const carScreenY = height * CONFIG.world.groundY - 20;
-      
-      // Emit exhaust particles when moving
-      if (Math.abs(speed) > 1) {
-        emitExhaustParticles(
-          carScreenX - CONFIG.car.width * 0.45,
-          carScreenY + CONFIG.car.height * 0.2,
-          speed
-        );
-      }
-      
-      // Draw particles
+      const carScreenX = width * 0.35, carScreenY = height * CONFIG.world.groundY - 20;
+      if (Math.abs(speed) > 1) emitExhaustParticles(carScreenX - CONFIG.car.width * 0.45, carScreenY + CONFIG.car.height * 0.2, speed);
       particles.forEach(p => p.draw(ctx));
       
-      // Draw car (always normal, never wireframe)
-      drawCar(carScreenX, carScreenY, state.wheelRotation, speed, false);
-      
-      // Draw drone
+      drawCar(carScreenX, carScreenY, state.wheelRotation, speed);
       drawDrone(carScreenX, carScreenY, nearestMilestone, nearestMilestoneScreenX);
       
-      // Update UI
       const progress = (cameraX / (CONFIG.world.totalLength - width)) * 100;
       document.getElementById('progressBar').style.width = `${progress}%`;
       document.getElementById('milestoneIndicator').textContent = `MILE ${state.currentMilestone}`;
-      
-      // Hide scroll hint after moving
-      if (cameraX > 100) {
-        document.getElementById('scrollHint').classList.add('hidden');
-      }
+      if (cameraX > 100) document.getElementById('scrollHint').classList.add('hidden');
       
       requestAnimationFrame(render);
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // INPUT HANDLING
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    function handleWheel(e) {
-      e.preventDefault();
-      state.scrollTarget += e.deltaY * CONFIG.physics.scrollMultiplier;
-    }
-
-    function handleTouchStart(e) {
-      e.preventDefault();
-      state.touchStartY = e.touches[0].clientY;
-      state.lastTouchY = state.touchStartY;
-      state.isDragging = true;
-    }
-
+    function handleWheel(e) { e.preventDefault(); state.scrollTarget += e.deltaY * CONFIG.physics.scrollMultiplier; }
+    function handleTouchStart(e) { e.preventDefault(); state.touchStartY = e.touches[0].clientY; state.lastTouchY = state.touchStartY; state.isDragging = true; }
     function handleTouchMove(e) {
-      e.preventDefault();
-      if (!state.isDragging) return;
-      
-      const touchY = e.touches[0].clientY;
-      const deltaY = state.lastTouchY - touchY;
-      state.scrollTarget += deltaY * CONFIG.physics.scrollMultiplier * 2;
-      state.lastTouchY = touchY;
+      e.preventDefault(); if (!state.isDragging) return;
+      const touchY = e.touches[0].clientY, deltaY = state.lastTouchY - touchY;
+      state.scrollTarget += deltaY * CONFIG.physics.scrollMultiplier * 2; state.lastTouchY = touchY;
     }
+    function handleTouchEnd(e) { state.isDragging = false; }
 
-    function handleTouchEnd(e) {
-      state.isDragging = false;
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // LOADING SEQUENCE
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     async function initializeApp() {
-      const loaderBar = document.getElementById('loaderBar');
-      const loadingText = document.getElementById('loadingText');
-      const loadingScreen = document.getElementById('loadingScreen');
-      
+      const loaderBar = document.getElementById('loaderBar'), loadingText = document.getElementById('loadingText'), loadingScreen = document.getElementById('loadingScreen');
       const loadingSteps = [
-        { text: 'INITIALIZING ENGINE', progress: 20 },
-        { text: 'GENERATING WORLD', progress: 40 },
-        { text: 'LOADING ASSETS', progress: 60 },
-        { text: 'CALIBRATING SYSTEMS', progress: 80 },
-        { text: 'READY', progress: 100 }
+        { text: 'INITIALIZING ENGINE', progress: 20 }, { text: 'GENERATING WORLD', progress: 40 },
+        { text: 'LOADING ASSETS', progress: 60 }, { text: 'CALIBRATING SYSTEMS', progress: 80 }, { text: 'READY', progress: 100 }
       ];
-      
       for (const step of loadingSteps) {
-        loadingText.textContent = step.text;
-        loaderBar.style.width = step.progress + '%';
+        loadingText.textContent = step.text; loaderBar.style.width = step.progress + '%';
         await new Promise(resolve => setTimeout(resolve, 400));
       }
-      
       await new Promise(resolve => setTimeout(resolve, 500));
-      loadingScreen.classList.add('hidden');
-      state.loaded = true;
+      loadingScreen.classList.add('hidden'); state.loaded = true;
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // SDK INITIALIZATION
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    async function onConfigChange(newConfig) {
-      config = { ...config, ...newConfig };
-      // Config changes are reflected in getMilestones() which is called each frame
-    }
-
-    function mapToCapabilities(cfg) {
-      return {
-        recolorables: [
-          {
-            get: () => cfg.background_color || defaultConfig.background_color,
-            set: (v) => { cfg.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
-          },
-          {
-            get: () => cfg.primary_color || defaultConfig.primary_color,
-            set: (v) => { cfg.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); }
-          },
-          {
-            get: () => cfg.secondary_color || defaultConfig.secondary_color,
-            set: (v) => { cfg.secondary_color = v; window.elementSdk.setConfig({ secondary_color: v }); }
-          },
-          {
-            get: () => cfg.text_color || defaultConfig.text_color,
-            set: (v) => { cfg.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
-          },
-          {
-            get: () => cfg.accent_color || defaultConfig.accent_color,
-            set: (v) => { cfg.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); }
-          }
-        ],
-        borderables: [],
-        fontEditable: {
-          get: () => cfg.font_family || 'Orbitron',
-          set: (v) => { cfg.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-        },
-        fontSizeable: undefined
-      };
-    }
-
-    function mapToEditPanelValues(cfg) {
-      return new Map([
-        ['owner_name', cfg.owner_name || defaultConfig.owner_name],
-        ['owner_title', cfg.owner_title || defaultConfig.owner_title],
-        ['contact_phone', cfg.contact_phone || defaultConfig.contact_phone],
-        ['contact_email', cfg.contact_email || defaultConfig.contact_email]
-      ]);
-    }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // INITIALIZATION
-    // ═══════════════════════════════════════════════════════════════════════════
-    
     async function init() {
-      // Initialize SDK
-      if (window.elementSdk) {
-        window.elementSdk.init({
-          defaultConfig,
-          onConfigChange,
-          mapToCapabilities,
-          mapToEditPanelValues
-        });
-        config = window.elementSdk.config || { ...defaultConfig };
-      }
+      resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+      initStars(); initBuildings(); initMountains();
       
-      // Setup canvas
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-      
-      // Initialize world elements
-      initStars();
-      initBuildings();
-      initMountains();
-      
-      // Setup input handlers
       canvas.addEventListener('wheel', handleWheel, { passive: false });
       canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
       canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
       canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
-      
-      // Prevent default touch behaviors
       document.body.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
       
-      // Start loading sequence
       await initializeApp();
-      
-      // Start render loop
       render();
     }
 
     init();
- </html>
+  </script>
+</body>
+</html>
